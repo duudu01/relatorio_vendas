@@ -1,4 +1,10 @@
-﻿ID,Data,Empresa,Vendedor,Produto,Valor,Forma de Pagamento
-35f415f1-a107-4c4e-9ed1-12e82612e2c6,2026-09-09,Colina,Murilo,test,333.0,Dinheiro
-655fa7e5-d6ce-4c16-98d1-cc2787bda2b1,2026-09-09,J&M,Murilo,1111111111111111111111111111111111111111111111111111111111111111,122.0,Dinheiro
-9850db77-fbfe-4ef4-a67c-42b678b2f837,2026-09-09,Golembiewski,Murilo,121212122222222222222222222222222,221.0,Dinheiro
+﻿Data,Empresa,Vendedor,Produto,Valor,Forma de Pagamento
+09/09/2026,Colina,Murilo,SCOTT SCALE,16000.0,PIX
+09/09/2026,Colina,Murilo,RODA CARBONO,3990.0,PIX
+09/09/2026,J&M,Patricia,ABSOLUTE 12V,3274.9,Cartão de Crédito
+09/09/2026,Colina,Wilson,KLOSH FEEL,8300.0,Dinheiro
+09/09/2026,Colina,Patricia,ABSOLUTE 12V,2388.0,Cartão de Crédito
+09/09/2026,Colina,Murilo,ABSOLUTE 12V,3599.0,Cartão de Crédito
+09/09/2026,J&M,Murilo,DIF. ABSOLUTE 12V,1499.0,Cartão de Crédito
+09/09/2026,Colina,Douglas,2X 8V ABSOLUTE NERO 5,2999.0,Cartão de Crédito
+09/09/2026,Colina,Douglas,ABSOLUTE 12V,1899.0,Cartão de Débito

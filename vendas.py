@@ -4,6 +4,8 @@ from datetime import datetime
 import os
 import uuid
 import calendar
+import hashlib
+import hmac
 
 
 # ============================================================
@@ -15,6 +17,146 @@ st.set_page_config(
     page_icon="🚲",
     layout="wide"
 )
+
+
+# ============================================================
+# SISTEMA DE LOGIN
+# ============================================================
+
+# Credenciais padrão.
+# Para alterar, basta modificar estas duas linhas.
+USUARIO_LOGIN = "Colina"
+SENHA_LOGIN = "Colina@2026"
+
+def gerar_hash_senha(senha):
+    """Gera um hash SHA-256 para comparar a senha com segurança."""
+    return hashlib.sha256(senha.encode("utf-8")).hexdigest()
+
+def autenticar_usuario():
+    """Exibe a tela de login e libera o sistema somente após autenticação."""
+
+    # Se já estiver autenticado, não mostra novamente o formulário.
+    if st.session_state.get("autenticado", False):
+        return True
+
+    st.markdown(
+        """
+        <style>
+        .login-box {
+            max-width: 480px;
+            margin: 70px auto 0 auto;
+            padding: 35px;
+            border-radius: 15px;
+            border: 1px solid rgba(128,128,128,0.25);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+        }
+        .login-title {
+            text-align: center;
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        .login-subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown('<div class="login-box">', unsafe_allow_html=True)
+
+    st.markdown(
+        '<div class="login-title">🚲 Colina Bike Center</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="login-subtitle">Controle de Vendas</div>',
+        unsafe_allow_html=True
+    )
+
+    with st.form("form_login"):
+        usuario = st.text_input(
+            "👤 Usuário",
+            placeholder="Digite seu usuário"
+        )
+
+        senha = st.text_input(
+            "🔒 Senha",
+            type="password",
+            placeholder="Digite sua senha"
+        )
+
+        entrar = st.form_submit_button(
+            "🔐 ENTRAR",
+            use_container_width=True,
+            type="primary"
+        )
+
+    if entrar:
+        senha_hash_digitada = gerar_hash_senha(senha)
+        senha_hash_correta = gerar_hash_senha(SENHA_LOGIN)
+
+        usuario_ok = hmac.compare_digest(
+            usuario.strip(),
+            USUARIO_LOGIN
+        )
+
+        senha_ok = hmac.compare_digest(
+            senha_hash_digitada,
+            senha_hash_correta
+        )
+
+        if usuario_ok and senha_ok:
+            st.session_state.autenticado = True
+            st.session_state.usuario_logado = usuario.strip()
+            st.rerun()
+        else:
+            st.error("❌ Usuário ou senha incorretos.")
+
+    st.markdown(
+        """
+        <div style="text-align:center; margin-top:20px; color:#888;">
+            🔒 Acesso restrito ao sistema interno
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    return False
+
+
+# ============================================================
+# BLOQUEIO DE ACESSO
+# ============================================================
+
+if not autenticar_usuario():
+    st.stop()
+
+
+# ============================================================
+# CONTROLE DE SESSÃO
+# ============================================================
+
+# Mostra o usuário logado e botão para sair no menu lateral.
+with st.sidebar:
+    st.markdown("### 🔐 Sessão")
+    st.success(
+        f"Usuário: **{st.session_state.get('usuario_logado', USUARIO_LOGIN)}**"
+    )
+
+    if st.button(
+        "🚪 SAIR DO SISTEMA",
+        use_container_width=True
+    ):
+        st.session_state.autenticado = False
+        st.session_state.pop("usuario_logado", None)
+        st.rerun()
 
 
 # ============================================================
