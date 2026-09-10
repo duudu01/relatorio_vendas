@@ -28,9 +28,13 @@ st.set_page_config(
 USUARIO_LOGIN = "Colina"
 SENHA_LOGIN = "Colina@2026"
 
+
 def gerar_hash_senha(senha):
     """Gera um hash SHA-256 para comparar a senha com segurança."""
-    return hashlib.sha256(senha.encode("utf-8")).hexdigest()
+    return hashlib.sha256(
+        senha.encode("utf-8")
+    ).hexdigest()
+
 
 def autenticar_usuario():
     """Exibe a tela de login e libera o sistema somente após autenticação."""
@@ -50,12 +54,14 @@ def autenticar_usuario():
             border: 1px solid rgba(128,128,128,0.25);
             box-shadow: 0 8px 30px rgba(0,0,0,0.10);
         }
+
         .login-title {
             text-align: center;
             font-size: 30px;
             font-weight: 700;
             margin-bottom: 5px;
         }
+
         .login-subtitle {
             text-align: center;
             color: #777;
@@ -66,7 +72,10 @@ def autenticar_usuario():
         unsafe_allow_html=True
     )
 
-    st.markdown('<div class="login-box">', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="login-box">',
+        unsafe_allow_html=True
+    )
 
     st.markdown(
         '<div class="login-title">🚲 Colina Bike Center</div>',
@@ -79,6 +88,7 @@ def autenticar_usuario():
     )
 
     with st.form("form_login"):
+
         usuario = st.text_input(
             "👤 Usuário",
             placeholder="Digite seu usuário"
@@ -97,8 +107,12 @@ def autenticar_usuario():
         )
 
     if entrar:
+
         senha_hash_digitada = gerar_hash_senha(senha)
-        senha_hash_correta = gerar_hash_senha(SENHA_LOGIN)
+
+        senha_hash_correta = gerar_hash_senha(
+            SENHA_LOGIN
+        )
 
         usuario_ok = hmac.compare_digest(
             usuario.strip(),
@@ -111,11 +125,20 @@ def autenticar_usuario():
         )
 
         if usuario_ok and senha_ok:
+
             st.session_state.autenticado = True
-            st.session_state.usuario_logado = usuario.strip()
+
+            st.session_state.usuario_logado = (
+                usuario.strip()
+            )
+
             st.rerun()
+
         else:
-            st.error("❌ Usuário ou senha incorretos.")
+
+            st.error(
+                "❌ Usuário ou senha incorretos."
+            )
 
     st.markdown(
         """
@@ -126,7 +149,10 @@ def autenticar_usuario():
         unsafe_allow_html=True
     )
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown(
+        "</div>",
+        unsafe_allow_html=True
+    )
 
     return False
 
@@ -136,6 +162,7 @@ def autenticar_usuario():
 # ============================================================
 
 if not autenticar_usuario():
+
     st.stop()
 
 
@@ -143,9 +170,10 @@ if not autenticar_usuario():
 # CONTROLE DE SESSÃO
 # ============================================================
 
-# Mostra o usuário logado e botão para sair no menu lateral.
 with st.sidebar:
+
     st.markdown("### 🔐 Sessão")
+
     st.success(
         f"Usuário: **{st.session_state.get('usuario_logado', USUARIO_LOGIN)}**"
     )
@@ -154,8 +182,14 @@ with st.sidebar:
         "🚪 SAIR DO SISTEMA",
         use_container_width=True
     ):
+
         st.session_state.autenticado = False
-        st.session_state.pop("usuario_logado", None)
+
+        st.session_state.pop(
+            "usuario_logado",
+            None
+        )
+
         st.rerun()
 
 
@@ -163,10 +197,13 @@ with st.sidebar:
 # TÍTULO
 # ============================================================
 
-st.title("🚲 Controle de Vendas - Colina Bike Center")
+st.title(
+    "🚲 Controle de Vendas - Colina Bike Center"
+)
 
 st.caption(
-    "Controle interno de vendas — Colina | J&M | Golembiewski"
+    "Controle interno de vendas — "
+    "Colina | J&M | Golembiewski | Listo"
 )
 
 
@@ -192,11 +229,18 @@ VENDEDORES = [
     "Jonathan"
 ]
 
+
+# ============================================================
+# EMPRESAS
+# ============================================================
+
 EMPRESAS = [
     "Colina",
     "J&M",
-    "Golembiewski"
+    "Golembiewski",
+    "Listo"
 ]
+
 
 FORMAS_PAGAMENTO = [
     "Dinheiro",
@@ -205,6 +249,7 @@ FORMAS_PAGAMENTO = [
     "PIX",
     "Boleto"
 ]
+
 
 COLUNAS = [
     "ID",
@@ -225,7 +270,9 @@ def carregar_dados():
 
     if not os.path.exists(ARQUIVO_DADOS):
 
-        return pd.DataFrame(columns=COLUNAS)
+        return pd.DataFrame(
+            columns=COLUNAS
+        )
 
     try:
 
@@ -287,7 +334,10 @@ def carregar_dados():
         # Empresa
         # ----------------------------------------------------
 
-        df["Empresa"] = df["Empresa"].astype(str)
+        df["Empresa"] = (
+            df["Empresa"]
+            .astype(str)
+        )
 
         return df
 
@@ -297,7 +347,9 @@ def carregar_dados():
             f"Erro ao carregar o histórico: {erro}"
         )
 
-        return pd.DataFrame(columns=COLUNAS)
+        return pd.DataFrame(
+            columns=COLUNAS
+        )
 
 
 # ============================================================
@@ -307,7 +359,9 @@ def carregar_dados():
 def salvar_dataframe(df):
 
     # Garantir que a pasta exista
-    pasta = os.path.dirname(ARQUIVO_DADOS)
+    pasta = os.path.dirname(
+        ARQUIVO_DADOS
+    )
 
     if pasta:
 
@@ -340,9 +394,13 @@ def salvar_registro(
 
     novo_registro = {
 
-        "ID": str(uuid.uuid4()),
+        "ID": str(
+            uuid.uuid4()
+        ),
 
-        "Data": pd.Timestamp(data),
+        "Data": pd.Timestamp(
+            data
+        ),
 
         "Empresa": empresa,
 
@@ -435,19 +493,23 @@ if hoje.day == 1:
     if not df_vendas.empty:
 
         mes_anterior = hoje.month - 1
+
         ano_anterior = hoje.year
 
         if mes_anterior == 0:
 
             mes_anterior = 12
+
             ano_anterior -= 1
 
         chave_mes_anterior = (
-            f"{ano_anterior:04d}-{mes_anterior:02d}"
+            f"{ano_anterior:04d}-"
+            f"{mes_anterior:02d}"
         )
 
         df_mes_anterior = df_vendas[
-            df_vendas["Data"].dt.strftime("%Y-%m")
+            df_vendas["Data"]
+            .dt.strftime("%Y-%m")
             == chave_mes_anterior
         ].copy()
 
@@ -460,18 +522,24 @@ if hoje.day == 1:
             st.info(
                 f"Hoje é dia 1º. "
                 f"Não esqueça de baixar o relatório "
-                f"de {nome_mes(mes_anterior)}/{ano_anterior}."
+                f"de {nome_mes(mes_anterior)}/"
+                f"{ano_anterior}."
             )
 
-            col1, col2, col3 = st.columns(3)
+            # =================================================
+            # QUATRO EMPRESAS
+            # =================================================
+
+            col1, col2, col3, col4 = st.columns(4)
 
             for coluna, empresa in zip(
-                [col1, col2, col3],
+                [col1, col2, col3, col4],
                 EMPRESAS
             ):
 
                 total = df_mes_anterior[
-                    df_mes_anterior["Empresa"] == empresa
+                    df_mes_anterior["Empresa"]
+                    == empresa
                 ]["Valor"].sum()
 
                 with coluna:
@@ -487,7 +555,10 @@ if hoje.day == 1:
 
             relatorio_mes = (
                 df_mes_anterior
-                .drop(columns=["ID"], errors="ignore")
+                .drop(
+                    columns=["ID"],
+                    errors="ignore"
+                )
                 .copy()
             )
 
@@ -509,14 +580,19 @@ if hoje.day == 1:
             )
 
             st.download_button(
+
                 label=(
                     f"📥 BAIXAR RELATÓRIO "
                     f"{nome_mes(mes_anterior).upper()}/"
                     f"{ano_anterior}"
                 ),
+
                 data=csv_mes,
+
                 file_name=nome_arquivo,
+
                 mime="text/csv",
+
                 use_container_width=True
             )
 
@@ -527,7 +603,9 @@ if hoje.day == 1:
 
 st.divider()
 
-st.header("➕ Nova Venda")
+st.header(
+    "➕ Nova Venda"
+)
 
 
 with st.form(
@@ -602,11 +680,17 @@ if salvar:
     else:
 
         salvar_registro(
+
             data=data_venda,
+
             empresa=empresa,
+
             vendedor=vendedor,
+
             produto=produto,
+
             valor=valor,
+
             forma_pagamento=forma_pagamento
         )
 
@@ -630,7 +714,9 @@ df_vendas = carregar_dados()
 
 st.divider()
 
-st.header("📊 Histórico de Vendas")
+st.header(
+    "📊 Histórico de Vendas"
+)
 
 
 if df_vendas.empty:
@@ -645,22 +731,33 @@ else:
     # RESUMO GERAL DAS EMPRESAS
     # ========================================================
 
-    st.subheader("🏢 Resumo Geral")
+    st.subheader(
+        "🏢 Resumo Geral"
+    )
 
-    col1, col2, col3 = st.columns(3)
+    # ========================================================
+    # QUATRO EMPRESAS
+    # ========================================================
+
+    col1, col2, col3, col4 = st.columns(4)
 
     for coluna, empresa in zip(
-        [col1, col2, col3],
+        [col1, col2, col3, col4],
         EMPRESAS
     ):
 
         vendas_empresa = df_vendas[
-            df_vendas["Empresa"] == empresa
+            df_vendas["Empresa"]
+            == empresa
         ]
 
-        total = vendas_empresa["Valor"].sum()
+        total = vendas_empresa[
+            "Valor"
+        ].sum()
 
-        quantidade = len(vendas_empresa)
+        quantidade = len(
+            vendas_empresa
+        )
 
         with coluna:
 
@@ -684,9 +781,11 @@ else:
     )
 
     meses_existentes = sorted(
+
         df_vendas["Mes"]
         .dropna()
         .unique(),
+
         reverse=True
     )
 
@@ -697,21 +796,30 @@ else:
 
     st.divider()
 
-    st.subheader("📅 Histórico Mensal")
+    st.subheader(
+        "📅 Histórico Mensal"
+    )
 
     nomes_abas = []
 
     for mes in meses_existentes:
 
-        ano = int(mes[:4])
-        numero_mes = int(mes[5:7])
+        ano = int(
+            mes[:4]
+        )
+
+        numero_mes = int(
+            mes[5:7]
+        )
 
         nomes_abas.append(
             f"{nome_mes(numero_mes)}/{ano}"
         )
 
 
-    abas = st.tabs(nomes_abas)
+    abas = st.tabs(
+        nomes_abas
+    )
 
 
     # ========================================================
@@ -726,11 +834,17 @@ else:
 
         with aba:
 
-            ano = int(mes[:4])
-            numero_mes = int(mes[5:7])
+            ano = int(
+                mes[:4]
+            )
+
+            numero_mes = int(
+                mes[5:7]
+            )
 
             df_mes = df_vendas[
-                df_vendas["Mes"] == mes
+                df_vendas["Mes"]
+                == mes
             ].copy()
 
 
@@ -747,20 +861,27 @@ else:
             # RESUMO DAS EMPRESAS NO MÊS
             # =================================================
 
-            col1, col2, col3 = st.columns(3)
+            # QUATRO EMPRESAS
+
+            col1, col2, col3, col4 = st.columns(4)
 
             for coluna, empresa in zip(
-                [col1, col2, col3],
+                [col1, col2, col3, col4],
                 EMPRESAS
             ):
 
                 df_empresa = df_mes[
-                    df_mes["Empresa"] == empresa
+                    df_mes["Empresa"]
+                    == empresa
                 ]
 
-                total = df_empresa["Valor"].sum()
+                total = df_empresa[
+                    "Valor"
+                ].sum()
 
-                quantidade = len(df_empresa)
+                quantidade = len(
+                    df_empresa
+                )
 
                 with coluna:
 
@@ -778,13 +899,20 @@ else:
             # TOTAL DO MÊS
             # =================================================
 
-            total_mes = df_mes["Valor"].sum()
+            total_mes = df_mes[
+                "Valor"
+            ].sum()
 
-            quantidade_mes = len(df_mes)
+            quantidade_mes = len(
+                df_mes
+            )
 
             ticket_medio = (
+
                 total_mes / quantidade_mes
+
                 if quantidade_mes > 0
+
                 else 0
             )
 
@@ -813,20 +941,26 @@ else:
             # =================================================
 
             filtro_empresa = st.selectbox(
+
                 "🔎 Filtrar Empresa",
+
                 ["Todas"] + EMPRESAS,
+
                 key=f"empresa_{mes}"
             )
 
 
             if filtro_empresa == "Todas":
 
-                df_exibicao = df_mes.copy()
+                df_exibicao = (
+                    df_mes.copy()
+                )
 
             else:
 
                 df_exibicao = df_mes[
-                    df_mes["Empresa"] == filtro_empresa
+                    df_mes["Empresa"]
+                    == filtro_empresa
                 ].copy()
 
 
@@ -842,8 +976,8 @@ else:
             if df_exibicao.empty:
 
                 st.info(
-                    "Nenhuma venda encontrada para "
-                    "este filtro."
+                    "Nenhuma venda encontrada "
+                    "para este filtro."
                 )
 
             else:
@@ -852,7 +986,9 @@ else:
                 # Criar tabela de exibição
                 # ---------------------------------------------
 
-                df_tabela = df_exibicao.copy()
+                df_tabela = (
+                    df_exibicao.copy()
+                )
 
                 df_tabela["Excluir"] = False
 
@@ -886,11 +1022,14 @@ else:
 
                         "Excluir":
                             st.column_config.CheckboxColumn(
+
                                 "🗑️ Excluir?",
+
                                 help=(
-                                    "Marque a venda que deseja "
-                                    "excluir."
+                                    "Marque a venda que "
+                                    "deseja excluir."
                                 ),
+
                                 default=False
                             ),
 
@@ -945,9 +1084,11 @@ else:
                 # EXCLUSÃO
                 # =================================================
 
-                linhas_excluir = df_editado[
-                    df_editado["Excluir"] == True
-                ]
+                linhas_excluir = (
+                    df_editado[
+                        df_editado["Excluir"] == True
+                    ]
+                )
 
 
                 if not linhas_excluir.empty:
@@ -960,7 +1101,10 @@ else:
 
 
                     confirmar = st.checkbox(
-                        "⚠️ Confirmo que desejo excluir os registros selecionados.",
+
+                        "⚠️ Confirmo que desejo excluir "
+                        "os registros selecionados.",
+
                         key=f"confirmar_{mes}"
                     )
 
@@ -968,9 +1112,13 @@ else:
                     if confirmar:
 
                         if st.button(
+
                             "🗑️ EXCLUIR REGISTROS SELECIONADOS",
+
                             type="primary",
+
                             use_container_width=True,
+
                             key=f"excluir_{mes}"
                         ):
 
@@ -988,6 +1136,7 @@ else:
                             # ---------------------------------
 
                             ids_excluir = (
+
                                 df_exibicao
                                 .loc[
                                     indices,
@@ -1001,11 +1150,13 @@ else:
                             # Remover pelo ID
                             # ---------------------------------
 
-                            df_atualizado = df_vendas[
-                                ~df_vendas["ID"].isin(
-                                    ids_excluir
-                                )
-                            ].copy()
+                            df_atualizado = (
+                                df_vendas[
+                                    ~df_vendas["ID"]
+                                    .isin(ids_excluir)
+                                ]
+                                .copy()
+                            )
 
 
                             # ---------------------------------
@@ -1057,7 +1208,10 @@ else:
             relatorio_mes = (
                 df_mes
                 .drop(
-                    columns=["ID", "Mes"],
+                    columns=[
+                        "ID",
+                        "Mes"
+                    ],
                     errors="ignore"
                 )
                 .copy()
@@ -1086,7 +1240,8 @@ else:
 
                 label=(
                     f"📥 Baixar "
-                    f"{nome_aba} - Todas as Empresas"
+                    f"{nome_aba} - "
+                    f"Todas as Empresas"
                 ),
 
                 data=csv_mes,
@@ -1110,16 +1265,19 @@ else:
             )
 
 
-            col1, col2, col3 = st.columns(3)
+            # QUATRO EMPRESAS
+
+            col1, col2, col3, col4 = st.columns(4)
 
 
             for coluna, empresa in zip(
-                [col1, col2, col3],
+                [col1, col2, col3, col4],
                 EMPRESAS
             ):
 
                 df_empresa_download = df_mes[
-                    df_mes["Empresa"] == empresa
+                    df_mes["Empresa"]
+                    == empresa
                 ].copy()
 
 
@@ -1128,7 +1286,10 @@ else:
                     df_empresa_download = (
                         df_empresa_download
                         .drop(
-                            columns=["ID", "Mes"],
+                            columns=[
+                                "ID",
+                                "Mes"
+                            ],
                             errors="ignore"
                         )
                     )
@@ -1194,5 +1355,6 @@ st.caption(
 )
 
 st.caption(
-    "Os dados são armazenados localmente no arquivo vendas.csv."
+    "Os dados são armazenados localmente "
+    "no arquivo vendas.csv."
 )
